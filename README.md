@@ -24,7 +24,7 @@ AI智能图表绘制系统是一个基于Langchain和ChatGPT的AI图表生成与
 
 **注意：** 每次使用前请清空原有图表，以确保新图表能够正确生成。
 
-![示例.gif](https://github.com/lzq603/aigraph/sample/simple.gif)
+![示例.gif](https://github.com/lzq603/aigraph/blob/master/sample/simple.gif?raw=true)
 
 ## 安装部署
 
