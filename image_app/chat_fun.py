@@ -4,7 +4,7 @@ import re
 import time
 os.environ["http_proxy"] = "http://127.0.0.1:7890"
 os.environ["https_proxy"] = "http://127.0.0.1:7890"
-OPENAI_API_KEY = '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'
+OPENAI_API_KEY = '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'
 
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import (

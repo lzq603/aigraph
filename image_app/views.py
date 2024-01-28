@@ -4,7 +4,7 @@ import time
 from image_app import chat_fun
 import traceback
 from requests.exceptions import ProxyError
-from openai.error import APIConnectionError, RateLimitError
+from openai.error import APIConnectionError, RateLimitError, AuthenticationError
 import subprocess
 import base64
 import binascii
@@ -100,6 +100,11 @@ def generate_graph(request):
             traceback.print_exc()
             err_msg = '账户额度不足'
             script = "alert('账户额度不足')"
+        except AuthenticationError as e:
+            print("该API-KEY没有权限")
+            traceback.print_exc()
+            err_msg = '该API-KEY没有权限'
+            script = "alert('该API-KEY没有权限')"
         except Exception as e:
             print("其他错误")
             traceback.print_exc()
