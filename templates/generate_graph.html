@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI智能图表</title>
+  <!-- 引入 ECharts 库 -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /*height: 100vh;*/
+      background-color: #f8f8f8;
+    }
+
+    #container {
+      text-align: center;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      width: 800px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    #inputBox {
+      padding: 10px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #555;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      resize: vertical;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #4caf50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #chart {
+      display: none;
+      margin-top: 20px;
+      height: 600px; /* 设置图表容器的高度 */
+    }
+
+    p {
+      color: #777;
+    }
+
+    #resultImage {
+      display: none;
+      margin-top: 20px;
+    }
+    
+    #generatedImage{
+        width: 150px;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <h1>图表狐</h1>
+    <div id="instructions">
+      <p>例如，您可以输入描述如下：</p>
+      <p><em>"帮我画出z=x^2+y^2的在空间坐标下的图像"</em></p>
+      <p><em>"根据以下数据为我绘制折线图，坐标轴注明单位……"</em></p>
+      <p><em>"根据内容帮我画出条形图/饼图/雷达图/折线图……"</em></p>
+      <p style="color:red">注意！每次使用一定要清空原有图表</p>
+    </div>
+
+    <div id="inputBox">
+      <textarea id="descriptionInput" placeholder="示例：根据以下数据绘制条形图：
+年龄    人数
+18-24   200
+25-34   350
+35-44   450
+45-54   300
+55+     150" style="height:120px;"></textarea>
+      <div style="display: flex;justify-content: center;margin: 20px 0;">
+        <label>输入KEY：</label>
+        <input type="text" id="apiKey" name="apiKey" style="width: 275px;" placeholder="在此输入KEY">
+      </div>
+      <button onclick="generate_graph()">生成图表</button>
+      <button onclick="clear_graph()">清空图表</button>
+    </div>
+
+    <div id="resultImage">
+      <p id="status">正在生成图像，请稍候...</p>
+      <img id="generatedImage" src="/graphai/static/images/loading.gif" alt="生成的图像">
+    </div>
+
+    <div id="chart"></div>
+
+    <!-- 显示今日访问次数的元素 -->
+    <p id="visitCount">今日访问: {{visitCount}}</p>
+    <p style="color:blue;"><a href="http://82.157.22.44:8090/archives/1701748285152">购买KEY、源码（附教程）</a></p>
+  </div>
+
+  <script>
+    function clear_graph(){
+        location.reload()
+    }
+  
+    function generate_graph() {
+
+      const descriptionInput = document.getElementById('descriptionInput').value;
+      // 立即显示 "正在生成图像，请稍候..." 消息
+      document.getElementById('resultImage').style.display = 'block';
+      document.getElementById('chart').innerHTML = '';
+      document.getElementById('status').innerText="正在生成图像，请稍候...";
+      const resultImage = document.getElementById('generatedImage');
+      resultImage.src = "/graphai/static/images/loading.gif"
+      var apikey = document.getElementById("apiKey").value;
+
+      // 使用 Fetch API 发送 POST 请求到后端
+      fetch('/graphai/generate_graph/?apikey=' + encodeURIComponent(apikey), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: new URLSearchParams({
+          'description': descriptionInput,
+        }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('resultImage').style.display = 'none';
+        console.log(data.script)
+        try {
+            eval(data.script);
+        } catch (exception){
+            alert("请根据以下内容调整提示词：\n" + data.script);
+        }
+        document.getElementById('status').innerText="已完成";
+      })
+      .catch(error => console.error('Error:', error));
+        // TODO: 配置图表
+        // 显示图表区域
+        document.getElementById('chart').style.display = 'block';
+    }
+  </script>
+</body>
+</html>

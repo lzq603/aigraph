@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI图像生成</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #f8f8f8;
+    }
+
+    #container {
+      text-align: center;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    #inputBox {
+      padding: 10px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #555;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+	
+	/* 修改输入框样式为textarea */
+    textarea {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      resize: vertical; /* 允许垂直拉伸 */
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #4caf50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #resultImage {
+      display: none;
+      margin-top: 20px;
+    }
+
+    p {
+      color: #777;
+    }
+
+    img {
+      max-width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <h1>FunctionArt</h1>
+	<div id="instructions">
+      <p>输入框中输入您的绘制要求，点击“生成图像”按钮，系统将根据描述生成相应的图像。</p>
+      <p>例如，您可以输入描述如下：</p>
+      <p><em>"帮我画出z=x^2+y^2的空间图像"</em></p>
+      <p><em>"帮我画出由x^2+y^2+z^2=1和z=x^2+y^2所围成的区域"</em></p>
+    </div>
+
+    <div id="inputBox">
+      <!-- 将输入框类型改为textarea -->
+      <textarea id="descriptionInput" placeholder="示例：画一个蓝色的音符"></textarea>
+      <button onclick="submitDescription()">生成图像</button>
+    </div>
+    <div id="resultImage">
+      <p id="status">正在生成图像，请稍候...</p>
+      <img id="generatedImage" src="/graphai/static/images/loading.gif" alt="生成的图像">
+    </div>
+    <!-- 显示今日访问次数的元素 -->
+    <p id="visitCount">今日访问: {{visitCount}}</p>
+  </div>
+
+  <script>
+    function submitDescription() {
+      const descriptionInput = document.getElementById('descriptionInput').value;
+      // 立即显示 "正在生成图像，请稍候..." 消息
+      document.getElementById('resultImage').style.display = 'block';
+      document.getElementById('status').innerText="正在生成图像，请稍候...";
+      const resultImage = document.getElementById('generatedImage');
+      resultImage.src = "/graphai/static/images/loading.gif"
+
+      // 使用 Fetch API 发送 POST 请求到后端
+      fetch('/graphai/generate_image/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: new URLSearchParams({
+          'description': descriptionInput,
+        }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        const resultImage = document.getElementById('generatedImage');
+        resultImage.src = '/graphai/' + data.image_path;
+        document.getElementById('status').innerText="已完成";
+      })
+      .catch(error => console.error('Error:', error));
+    }
+  </script>
+</body>
+</html>
