@@ -14,6 +14,10 @@ AI智能图表绘制系统是一个基于Langchain和ChatGPT的AI图表生成与
 
 *   **持续创新与优化：** 团队致力于不断引入新的图表类型、算法和用户反馈机制，确保系统始终保持创新性和用户满意度。
 
+## 项目结构
+
+![流程图.gif](https://github.com/lzq603/aigraph/blob/master/sample/AIChart.png?raw=true)
+
 ## 使用说明
 
 1.  在输入框中描述您想要创建的图表，如：“帮我画出z=x^2+y^2在空间坐标下的图像”。
