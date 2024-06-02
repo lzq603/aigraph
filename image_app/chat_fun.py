@@ -93,7 +93,7 @@ def gen_graph(text='', api_key=OPENAI_API_KEY):
         # return exec(code)
         return code
 
-    model = ChatOpenAI(openai_api_key=OPENAI_API_KEY, temperature=0.0, request_timeout=120, max_retries=1)
+    model = ChatOpenAI(openai_api_key=aip_key, temperature=0.0, request_timeout=120, max_retries=1)
     chain = prompt | model | StrOutputParser() | _sanitize_output
     output = chain.invoke({"input": text})
     print("输出：")
