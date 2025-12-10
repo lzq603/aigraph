@@ -3,6 +3,7 @@
 AI智能图表绘制系统是一个基于Langchain和ChatGPT的AI图表生成与数据可视化平台。该平台融合了自然语言理解和人工智能绘图技术，致力于为用户提供高度个性化的数据可视化解决方案。通过整合Langchain和ChatGPT的强大功能，该平台能够快速理解用户输入的描述，并智能推断最适合的图表类型，使用户能够在无需专业技能的情况下创建复杂而富有表现力的统计图表。
 
 在线体验：[https://graphai.crazystone.work/](https://graphai.crazystone.work/)
+线上版源码：[https://graphai.crazystone.work/code_buy.html](https://graphai.crazystone.work/code_buy.html)
 
 ## 主要特点
 
